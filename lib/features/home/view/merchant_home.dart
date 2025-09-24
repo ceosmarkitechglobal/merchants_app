@@ -1,5 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../provider/nav_provider.dart';
 import 'merchant_screens/dashboard_screen.dart';
 import 'merchant_screens/payments_screen.dart';
@@ -8,6 +11,13 @@ import 'merchant_screens/ads_screen.dart';
 class MerchantHome extends ConsumerWidget {
   const MerchantHome({super.key});
 
+  Future<void> _logout(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', false);
+
+    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentIndex = ref.watch(navIndexProvider);
@@ -15,6 +25,16 @@ class MerchantHome extends ConsumerWidget {
     final screens = const [DashboardScreen(), PaymentsScreen(), AdsScreen()];
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Merchant Home"),
+        actions: [
+          IconButton(
+            onPressed: () => _logout(context),
+            icon: const Icon(Icons.logout),
+            tooltip: "Logout",
+          ),
+        ],
+      ),
       body: screens[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
