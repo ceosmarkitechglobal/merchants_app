@@ -2,40 +2,25 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:merchantside_app/features/ads/view/create_ad_screen.dart';
+import 'package:merchantside_app/features/dashboard/view/dashboard_screen.dart';
 import '../provider/nav_provider.dart';
-import 'merchant_screens/dashboard_screen.dart';
 import 'merchant_screens/payments_screen.dart';
-import 'merchant_screens/ads_screen.dart';
 
 class MerchantHome extends ConsumerWidget {
   const MerchantHome({super.key});
 
-  Future<void> _logout(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLoggedIn', false);
-
-    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
-  }
-
+  static const _screens = [
+    MerchantDashboardScreen(),
+    PaymentsScreen(),
+    CreateAdScreen(),
+  ];
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentIndex = ref.watch(navIndexProvider);
 
-    final screens = const [DashboardScreen(), PaymentsScreen(), AdsScreen()];
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Merchant Home"),
-        actions: [
-          IconButton(
-            onPressed: () => _logout(context),
-            icon: const Icon(Icons.logout),
-            tooltip: "Logout",
-          ),
-        ],
-      ),
-      body: screens[currentIndex],
+      body: IndexedStack(index: currentIndex, children: _screens),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
         selectedItemColor: Colors.deepPurple,

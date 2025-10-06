@@ -5,6 +5,21 @@ class PaymentsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text("Payments Screen"));
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "Payments",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
+        ),
+        backgroundColor: const Color(0xFF571094),
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
+      body: Center(
+        child: Text(
+          "Payments Screen",
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
   }
 }
