@@ -8,7 +8,7 @@ class AuthApi {
     String email,
     String password,
   ) async {
-    final url = Uri.parse('$baseUrl/auth/login');
+    final url = Uri.parse('$baseUrl/merchants/login');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},

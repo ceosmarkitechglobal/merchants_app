@@ -35,7 +35,7 @@ class _MerchantLoginScreenState extends ConsumerState<MerchantLoginScreen> {
 
         Navigator.pushNamedAndRemoveUntil(
           context,
-          '/merchantHome',
+          '/merchanthome',
           (route) => false,
         );
 
