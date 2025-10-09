@@ -13,7 +13,7 @@ class MerchantHome extends ConsumerWidget {
   static const _screens = [
     MerchantDashboardScreen(),
     PaymentsScreen(),
-    CreateAdScreen(),
+    MerchantCreateAdScreen(),
   ];
   @override
   Widget build(BuildContext context, WidgetRef ref) {
