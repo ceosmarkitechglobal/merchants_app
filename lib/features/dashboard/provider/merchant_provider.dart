@@ -1,6 +1,6 @@
 // lib/features/dashboard/provider/dashboard_provider.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:merchantside_app/features/auth/providers/auth_providers.dart';
+import 'package:merchantside_app/features/auth/providers/login_auth_providers.dart';
 import 'package:merchantside_app/features/dashboard/data/merchant_api.dart';
 
 enum DashboardStatus { initial, loading, success, error }

@@ -1,44 +1,43 @@
-// ignore_for_file: use_build_context_synchronously
-
+// lib/features/splash/view/splash_screen.dart
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:merchantside_app/core/storage/secure_storage_service.dart';
 
-class MerchantSplashScreen extends StatefulWidget {
-  const MerchantSplashScreen({super.key});
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
   @override
-  State<MerchantSplashScreen> createState() => _MerchantSplashScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _MerchantSplashScreenState extends State<MerchantSplashScreen> {
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigateNext();
+    _checkLogin();
   }
 
-  void _navigateNext() async {
-    await Future.delayed(const Duration(seconds: 1));
-
-    if (!mounted) return;
-
-    final prefs = await SharedPreferences.getInstance();
-    final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-
-    if (isLoggedIn) {
+  Future<void> _checkLogin() async {
+    final token = await SecureStorageService.getToken();
+    await Future.delayed(
+      const Duration(seconds: 2),
+    ); // show splash for 2 seconds
+    if (token != null) {
       Navigator.pushReplacementNamed(context, '/merchanthome');
     } else {
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacementNamed(context, '/merchantlogin');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       body: Center(
-        child: Text(
-          "Merchant App Splash Screen",
-          style: Theme.of(context).textTheme.headlineLarge,
+        child: Image.asset(
+          'assets/Logo.png',
+          width: size.width * 0.5,
+          height: size.width * 0.5,
+          fit: BoxFit.contain,
         ),
       ),
     );

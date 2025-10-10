@@ -1,7 +1,7 @@
 // lib/features/ads/provider/ad_provider.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:merchantside_app/features/ads/data/ads_api.dart';
-import '../../auth/providers/auth_providers.dart';
+import '../../auth/providers/login_auth_providers.dart';
 
 enum AdStatus { initial, loading, success, error }
 

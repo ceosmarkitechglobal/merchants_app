@@ -1,6 +1,7 @@
 // lib/features/profile/view/profile_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:merchantside_app/features/auth/providers/login_auth_providers.dart';
 import '../provider/profile_provider.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -22,7 +23,46 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final profileState = ref.watch(profileProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Merchant Profile")),
+      appBar: AppBar(
+        title: const Text("Merchant Profile"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text('Logout'),
+                  content: const Text('Are you sure you want to log out?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: const Text('Logout'),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirmed == true) {
+                await ref
+                    .read(authProvider.notifier)
+                    .logout(); // ✅ clears JWT from secure storage
+                if (context.mounted) {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/merchantlogin',
+                    (route) => false,
+                  ); // ✅ ensures user can't go back
+                }
+              }
+            },
+          ),
+        ],
+      ),
       body: Center(
         child: switch (profileState.status) {
           ProfileStatus.loading => const CircularProgressIndicator(),

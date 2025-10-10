@@ -2,8 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:merchantside_app/features/auth/providers/auth_providers.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:merchantside_app/core/storage/secure_storage_service.dart';
+
+import 'package:merchantside_app/features/auth/providers/login_auth_providers.dart';
 
 class MerchantLoginScreen extends ConsumerStatefulWidget {
   const MerchantLoginScreen({super.key});
@@ -27,12 +28,13 @@ class _MerchantLoginScreenState extends ConsumerState<MerchantLoginScreen> {
     final authState = ref.watch(authProvider);
     final size = MediaQuery.of(context).size;
 
+    // 🔔 Listen to login state
     ref.listen<AuthState>(authProvider, (previous, next) async {
       if (next.status == AuthStatus.success && next.token != null) {
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('jwtToken', next.token!);
-        await prefs.setBool('isMerchantLoggedIn', true);
+        // ✅ Save JWT securely
+        await SecureStorageService.saveToken(next.token!);
 
+        // Navigate to MerchantHome
         Navigator.pushNamedAndRemoveUntil(
           context,
           '/merchanthome',
@@ -61,6 +63,8 @@ class _MerchantLoginScreenState extends ConsumerState<MerchantLoginScreen> {
               child: Column(
                 children: [
                   const Spacer(flex: 2),
+
+                  // App Logo
                   Image.asset(
                     'assets/Logo.png',
                     width: size.width * 0.4,
@@ -68,6 +72,7 @@ class _MerchantLoginScreenState extends ConsumerState<MerchantLoginScreen> {
                     fit: BoxFit.contain,
                   ),
                   const SizedBox(height: 20),
+
                   const Text(
                     "Sign In With Email",
                     style: TextStyle(
@@ -82,6 +87,8 @@ class _MerchantLoginScreenState extends ConsumerState<MerchantLoginScreen> {
                     style: TextStyle(color: Color(0xFF737373)),
                   ),
                   const SizedBox(height: 30),
+
+                  // Email Field
                   TextField(
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -95,6 +102,8 @@ class _MerchantLoginScreenState extends ConsumerState<MerchantLoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
+
+                  // Password Field
                   TextField(
                     controller: passwordController,
                     obscureText: true,
@@ -108,6 +117,8 @@ class _MerchantLoginScreenState extends ConsumerState<MerchantLoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
+
+                  // Terms Checkbox
                   Row(
                     children: [
                       Checkbox(
@@ -128,6 +139,33 @@ class _MerchantLoginScreenState extends ConsumerState<MerchantLoginScreen> {
                     ],
                   ),
                   const SizedBox(height: 20),
+                  // At the bottom of the Column in MerchantLoginScreen.dart
+                  // "Don't have an account? Sign Up" link
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/merchantsignup');
+                    },
+                    child: RichText(
+                      text: const TextSpan(
+                        text: "Don't have an account? ",
+                        style: TextStyle(
+                          color: Color(0xFF737373),
+                          fontSize: 14,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: "Sign Up",
+                            style: TextStyle(
+                              color: Color(0xFF571094),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  // Login Button
                   SizedBox(
                     width: double.infinity,
                     height: 50,

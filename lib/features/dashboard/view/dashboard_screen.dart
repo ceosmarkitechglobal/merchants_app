@@ -3,7 +3,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:merchantside_app/features/auth/providers/auth_providers.dart';
 import 'package:merchantside_app/features/dashboard/provider/merchant_provider.dart';
 import 'package:merchantside_app/features/profile/view/profile_screen.dart';
 import 'package:merchantside_app/features/withdraw/view/withdrawal_screen.dart';
@@ -43,13 +42,6 @@ class _MerchantDashboardScreenState
                   builder: (_) => const ProfileScreen(), // Navigate to profile
                 ),
               );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              await ref.read(authProvider.notifier).logout();
-              Navigator.pushReplacementNamed(context, '/login');
             },
           ),
         ],

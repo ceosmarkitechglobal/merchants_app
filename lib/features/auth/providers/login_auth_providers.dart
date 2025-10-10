@@ -1,6 +1,8 @@
+// lib/features/auth/providers/login_auth_providers.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../data/auth_api.dart';
+import 'package:merchantside_app/core/storage/secure_storage_service.dart';
+
+import '../data/login_auth_api.dart';
 
 enum AuthStatus { initial, loading, success, error }
 
@@ -23,14 +25,12 @@ class AuthState {
 }
 
 class AuthNotifier extends StateNotifier<AuthState> {
-  final _storage = const FlutterSecureStorage();
-
   AuthNotifier() : super(AuthState.initial()) {
     _loadToken();
   }
 
   Future<void> _loadToken() async {
-    final token = await _storage.read(key: 'jwt_token');
+    final token = await SecureStorageService.getToken();
     if (token != null) {
       state = state.copyWith(status: AuthStatus.success, token: token);
     }
@@ -39,28 +39,30 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> login(String email, String password) async {
     state = state.copyWith(status: AuthStatus.loading);
     try {
+      print("📡 Calling login API: $email / $password");
       final response = await AuthApi.login(email, password);
+      print("📥 Login API Response: $response");
+
       if (response.containsKey('token')) {
         final token = response['token'];
-        await _storage.write(key: 'jwt_token', value: token);
-        state = state.copyWith(
-          status: AuthStatus.success,
-          message: "Login Successful ✅",
-          token: token,
-        );
+        await SecureStorageService.saveToken(token);
+        state = state.copyWith(status: AuthStatus.success, token: token);
+        print("✅ Login successful, token saved");
       } else {
         state = state.copyWith(
           status: AuthStatus.error,
           message: response['message'] ?? "Login failed",
         );
+        print("❌ Login failed: ${response['message']}");
       }
     } catch (e) {
       state = state.copyWith(status: AuthStatus.error, message: e.toString());
+      print("❌ Login Exception: $e");
     }
   }
 
   Future<void> logout() async {
-    await _storage.delete(key: 'jwt_token');
+    await SecureStorageService.deleteToken();
     state = state.copyWith(token: null, status: AuthStatus.initial);
   }
 }

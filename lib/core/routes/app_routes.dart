@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../features/auth/views/login_screen.dart';
+import 'package:merchantside_app/features/auth/views/login_screen.dart';
+import 'package:merchantside_app/features/auth/views/merchant_signup_screen.dart';
+import 'package:merchantside_app/features/home/view/merchant_home.dart';
 import '../../features/splash/view/splash_screen.dart';
-import '../../features/home/view/merchant_home.dart';
 
 final Map<String, WidgetBuilder> appRoutes = {
-  '/': (context) => const MerchantSplashScreen(),
+  '/splash': (context) => const SplashScreen(),
+  '/merchantlogin': (context) => const MerchantLoginScreen(),
+  '/merchantsignup': (context) => const MerchantSignupScreen(),
   '/merchanthome': (context) => const MerchantHome(),
-  '/login': (context) => const MerchantLoginScreen(),
 };
